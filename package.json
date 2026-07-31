@@ -13,6 +13,7 @@
   "scripts": {
     "build": "npm run build -w @websem/types && npm run build -w @websem/client && npm run build -w @websem/builder && npm run build -w @websem/angular",
     "format": "prettier --check README.md package.json scripts && npm run format --workspaces --if-present",
+    "prelint": "npm run build",
     "lint": "eslint scripts eslint.config.js && npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present && node scripts/test-compatibility.mjs",
     "version:set": "node scripts/set-version.mjs"
