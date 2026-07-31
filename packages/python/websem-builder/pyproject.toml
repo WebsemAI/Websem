@@ -11,8 +11,11 @@ license = "MIT"
 dependencies = [
   "model2vec>=0.6.0",
   "numpy>=1.26.0,<2.3",
-  "websem-types>=0.1.0",
+  "websem-types==0.1.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/WebsemAI/Websem"
 
 [project.scripts]
 websem-build = "websem_builder.cli:main"

@@ -1,7 +1,12 @@
 {
   "name": "websem-monorepo",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebsemAI/Websem.git"
+  },
   "workspaces": [
     "packages/typescript/*"
   ],
@@ -9,7 +14,8 @@
     "build": "npm run build -w @websem/types && npm run build -w @websem/client && npm run build -w @websem/builder && npm run build -w @websem/angular",
     "format": "prettier --check README.md package.json scripts && npm run format --workspaces --if-present",
     "lint": "eslint scripts eslint.config.js && npm run lint --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present && node scripts/test-compatibility.mjs"
+    "test": "npm run test --workspaces --if-present && node scripts/test-compatibility.mjs",
+    "version:set": "node scripts/set-version.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -2,6 +2,11 @@
   "name": "@websem/builder",
   "version": "0.1.0",
   "description": "Node.js artifact builder for websem browser semantic search",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebsemAI/Websem.git",
+    "directory": "packages/typescript/builder"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -29,6 +34,9 @@
     "@types/node": "^20.19.9"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=20"
   }

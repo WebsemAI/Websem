@@ -1,0 +1,43 @@
+name: Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - uses: astral-sh/setup-uv@v8
+        with:
+          version: "0.11.32"
+          python-version: "3.11"
+          enable-cache: true
+
+      - run: npm ci
+      - run: uv sync --locked --all-packages
+      - run: npm run lint
+      - run: npm run format
+      - run: npm run test
+      - run: npm run build
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run pytest
+      - run: uv build --all-packages --out-dir dist-python
+      - run: npm pack --workspaces --dry-run

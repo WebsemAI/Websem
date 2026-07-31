@@ -8,7 +8,10 @@ version = "0.1.0"
 description = "Pure-Python client for websem semantic search artifacts"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = ["websem-types>=0.1.0,<0.2.0"]
+dependencies = ["websem-types==0.1.0"]
+
+[project.urls]
+Repository = "https://github.com/WebsemAI/Websem"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/websem_client"]

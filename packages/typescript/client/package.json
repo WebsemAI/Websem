@@ -2,6 +2,11 @@
   "name": "@websem/client",
   "version": "0.1.0",
   "description": "Side-effect-free browser client for websem semantic search artifacts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebsemAI/Websem.git",
+    "directory": "packages/typescript/client"
+  },
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -23,6 +28,9 @@
     "@websem/types": "0.1.0"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=20"
   }

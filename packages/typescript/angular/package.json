@@ -2,6 +2,11 @@
   "name": "@websem/angular",
   "version": "0.1.0",
   "description": "Angular WebMCP adapter for @websem/client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebsemAI/Websem.git",
+    "directory": "packages/typescript/angular"
+  },
   "type": "module",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
@@ -37,5 +42,8 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -2,6 +2,11 @@
   "name": "@websem/types",
   "version": "0.1.0",
   "description": "Shared TypeScript types for websem browser semantic search artifacts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebsemAI/Websem.git",
+    "directory": "packages/typescript/types"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -19,6 +24,9 @@
     "test": "vitest run --passWithNoTests"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=20"
   }

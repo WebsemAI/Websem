@@ -10,9 +10,12 @@ requires-python = ">=3.11"
 license = "MIT"
 dependencies = [
   "mkdocs>=1.4",
-  "websem-builder>=0.1.0",
-  "websem-types>=0.1.0",
+  "websem-builder==0.1.0",
+  "websem-types==0.1.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/WebsemAI/Websem"
 
 [project.entry-points."mkdocs.plugins"]
 websem-build = "mkdocs_websem.build:WebsemBuildPlugin"

@@ -1,0 +1,73 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - uses: astral-sh/setup-uv@v8
+        with:
+          version: "0.11.32"
+          python-version: "3.11"
+
+      - run: npm ci
+      - run: uv sync --locked --all-packages
+      - run: npm run lint
+      - run: npm run format
+      - run: npm run test
+      - run: npm run build
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run pytest
+
+  publish-npm:
+    needs: check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --workspaces --access public
+
+  publish-python:
+    needs: check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v8
+        with:
+          version: "0.11.32"
+          python-version: "3.11"
+
+      - run: uv build --all-packages --out-dir dist-python
+      - run: gh release create "$GITHUB_REF_NAME" dist-python/* --generate-notes --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
