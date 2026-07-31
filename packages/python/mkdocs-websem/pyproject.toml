@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mkdocs-websem"
+version = "0.1.0"
+description = "MkDocs build and Material search plugins for websem"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+  "mkdocs>=1.4",
+  "websem-builder>=0.1.0",
+  "websem-types>=0.1.0",
+]
+
+[project.entry-points."mkdocs.plugins"]
+websem-build = "mkdocs_websem.build:WebsemBuildPlugin"
+websem-search = "mkdocs_websem.search:WebsemSearchPlugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mkdocs_websem"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/mkdocs_websem", "tests", "pyproject.toml"]

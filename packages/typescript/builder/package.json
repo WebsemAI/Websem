@@ -1,0 +1,35 @@
+{
+  "name": "@websem/builder",
+  "version": "0.1.0",
+  "description": "Node.js artifact builder for websem browser semantic search",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "websem-build": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "format": "prettier --check src test vitest.config.ts",
+    "lint": "eslint src test vitest.config.ts",
+    "test": "vitest run --watch=false"
+  },
+  "dependencies": {
+    "@websem/client": "0.1.0",
+    "@websem/types": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

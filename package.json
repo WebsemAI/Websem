@@ -1,0 +1,25 @@
+{
+  "name": "websem-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/typescript/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @websem/types && npm run build -w @websem/client && npm run build -w @websem/builder && npm run build -w @websem/angular",
+    "format": "prettier --check README.md package.json scripts && npm run format --workspaces --if-present",
+    "lint": "eslint scripts eslint.config.js && npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present && node scripts/test-compatibility.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.8.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

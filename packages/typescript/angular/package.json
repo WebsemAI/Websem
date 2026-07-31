@@ -1,0 +1,41 @@
+{
+  "name": "@websem/angular",
+  "version": "0.1.0",
+  "description": "Angular WebMCP adapter for @websem/client",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "format": "prettier --check src test",
+    "lint": "eslint src test",
+    "test": "vitest run --watch=false"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=22.0.0"
+  },
+  "dependencies": {
+    "@websem/client": "0.1.0",
+    "@websem/types": "0.1.0"
+  },
+  "devDependencies": {
+    "@angular/core": "^22.1.0",
+    "rxjs": "^7.8.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "license": "MIT"
+}

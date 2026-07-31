@@ -1,0 +1,31 @@
+# @websem/angular
+
+Angular v22+ WebMCP tools backed by `@websem/client`.
+
+The config mirrors `sdl-mcp`: tool instructions, descriptions, query descriptions, and
+result messages come from `texts.DOC_*` and optional `texts.ICON_*` fields. Set exactly
+one of `indexUrl`, `artifacts`, or `client` for documentation search. Icon search uses
+the matching `iconIndexUrl`, `iconArtifacts`, or `iconClient` field.
+
+```ts
+provideWebsemTools({
+  name: "acme-docs",
+  description: "Acme documentation",
+  displayName: "Acme",
+  documentedName: "Acme",
+  projectName: "Acme",
+  searchToolName: "acme-search",
+  indexUrl: "/search/",
+  exampleQuestions: [],
+  texts: {
+    DOC_SEARCH_INSTRUCTION: "Search before answering Acme questions.",
+    DOC_SEARCH_TOOL_DESCRIPTION: "Semantic search over Acme docs.",
+    DOC_SEARCH_QUERY_DESCRIPTION: "Documentation search query.",
+    DOC_NO_RESULTS: "No results for {query}.",
+    DOC_SUCCESS_HEADER: "Found {count} results for {query}.",
+    DOC_RESULT_NOTE: "Only use relevant results.",
+  },
+});
+```
+
+Angular API: https://angular.dev/api/core/provideExperimentalWebMcpTools

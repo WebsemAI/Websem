@@ -1,0 +1,6 @@
+The WordPiece normalization, embedding, quantization, and ranking algorithms
+are adapted from Bart de Goede's static-site-search-eval and blog client code:
+https://github.com/bartdegoede/static-site-search-eval
+https://github.com/bartdegoede/blog/tree/main/assets/js/semantic
+
+Copyright (c) 2026 Bart de Goede. Used under the MIT License.

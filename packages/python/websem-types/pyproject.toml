@@ -1,0 +1,14 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "websem-types"
+version = "0.1.0"
+description = "Shared Python types for websem browser semantic search artifacts"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/websem_types"]

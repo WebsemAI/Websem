@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://websem.dev/schemas/websem-manifest.schema.json",
+  "title": "Websem artifact manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "websem_version",
+    "model_id",
+    "dims",
+    "vocab_size",
+    "n_chunks",
+    "chunk_size",
+    "chunk_overlap",
+    "title_prefix",
+    "chunker_version",
+    "doc_scale",
+    "files"
+  ],
+  "properties": {
+    "websem_version": { "const": "1.0" },
+    "model_id": { "type": "string", "minLength": 1 },
+    "dims": { "type": "integer", "minimum": 1 },
+    "vocab_size": { "type": "integer", "minimum": 1 },
+    "n_chunks": { "type": "integer", "minimum": 0 },
+    "chunk_size": { "type": "integer", "minimum": 1 },
+    "chunk_overlap": { "type": "integer", "minimum": 0 },
+    "title_prefix": { "type": "boolean" },
+    "chunker_version": { "type": "string" },
+    "doc_scale": { "const": 127 },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chunks", "docs", "tokens", "scales", "vocab"],
+      "properties": {
+        "chunks": { "type": "string" },
+        "docs": { "type": "string" },
+        "tokens": { "type": "string" },
+        "scales": { "type": "string" },
+        "vocab": { "type": "string" }
+      }
+    }
+  }
+}

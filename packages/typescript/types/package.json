@@ -1,0 +1,25 @@
+{
+  "name": "@websem/types",
+  "version": "0.1.0",
+  "description": "Shared TypeScript types for websem browser semantic search artifacts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "format": "prettier --check src",
+    "lint": "eslint src",
+    "test": "vitest run --passWithNoTests"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "types": ["node"],
+    "paths": {
+      "@websem/client": ["../client/dist/index.d.ts"],
+      "@websem/types": ["../types/dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}
