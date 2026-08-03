@@ -1,6 +1,6 @@
 {
   "name": "@websem/types",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Shared TypeScript types for websem browser semantic search artifacts",
   "repository": {
     "type": "git",
