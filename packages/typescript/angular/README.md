@@ -1,12 +1,31 @@
 # @websem/angular
 
-Angular v22+ WebMCP tools backed by `@websem/client`.
+Angular v22+ WebMCP tools backed by
+[`@websem/client`](https://www.npmjs.com/package/@websem/client).
 
 ## Install
 
 ```bash
 npm install @websem/angular
 ```
+
+## Packages
+
+TypeScript: [`@websem/client`](https://www.npmjs.com/package/@websem/client),
+[`@websem/builder`](https://www.npmjs.com/package/@websem/builder),
+[`@websem/angular`](https://www.npmjs.com/package/@websem/angular), and
+[`@websem/types`](https://www.npmjs.com/package/@websem/types).
+
+Python: [`websem-client`](https://pypi.org/project/websem-client/),
+[`websem-builder`](https://pypi.org/project/websem-builder/),
+[`mkdocs-websem`](https://pypi.org/project/mkdocs-websem/), and
+[`websem-types`](https://pypi.org/project/websem-types/).
+
+The adapter requires a Websem index with prebuilt embeddings. Build the index ahead of
+time with [`@websem/builder`](https://www.npmjs.com/package/@websem/builder) or
+[`websem-builder`](https://pypi.org/project/websem-builder/), serve its generated files
+as static assets, and point `indexUrl` to that directory. When using `artifacts` or
+`client` instead, they must already contain the built index.
 
 The config mirrors `sdl-mcp`: tool instructions, descriptions, query descriptions, and
 result messages come from `texts.DOC_*` and optional `texts.ICON_*` fields. Set exactly
@@ -32,8 +51,10 @@ provideWebsemTools({
   texts: {
     DOC_SEARCH_INSTRUCTION:
       "Search before answering Acme questions. Search is case-insensitive. Read a result's Markdown File path when its snippet is insufficient.",
-    DOC_SEARCH_TOOL_DESCRIPTION: "Case-insensitive semantic search over Acme docs.",
-    DOC_SEARCH_QUERY_DESCRIPTION: "Case-insensitive documentation search query.",
+    DOC_SEARCH_TOOL_DESCRIPTION:
+      "Case-insensitive semantic search over Acme docs.",
+    DOC_SEARCH_QUERY_DESCRIPTION:
+      "Case-insensitive documentation search query.",
     DOC_NO_RESULTS: "No results for {query}.",
     DOC_SUCCESS_HEADER: "Found {count} results for {query}.",
     DOC_RESULT_NOTE: "Only use relevant results.",

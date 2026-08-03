@@ -10,6 +10,11 @@ format, so either client can read output from either builder.
 
 ### TypeScript
 
+Packages: [`@websem/client`](https://www.npmjs.com/package/@websem/client),
+[`@websem/builder`](https://www.npmjs.com/package/@websem/builder),
+[`@websem/angular`](https://www.npmjs.com/package/@websem/angular), and
+[`@websem/types`](https://www.npmjs.com/package/@websem/types).
+
 ```bash
 npm install @websem/client
 npm install --save-dev @websem/builder
@@ -18,6 +23,11 @@ npm install @websem/types
 ```
 
 ### Python
+
+Packages: [`websem-client`](https://pypi.org/project/websem-client/),
+[`websem-builder`](https://pypi.org/project/websem-builder/),
+[`mkdocs-websem`](https://pypi.org/project/mkdocs-websem/), and
+[`websem-types`](https://pypi.org/project/websem-types/).
 
 ```bash
 uv add websem-client
@@ -85,8 +95,10 @@ provideWebsemTools({
   texts: {
     DOC_SEARCH_INSTRUCTION:
       "Search before answering Acme questions. Search is case-insensitive. Read a result's Markdown File path when its snippet is insufficient.",
-    DOC_SEARCH_TOOL_DESCRIPTION: "Case-insensitive semantic search over Acme documentation.",
-    DOC_SEARCH_QUERY_DESCRIPTION: "Case-insensitive documentation search query.",
+    DOC_SEARCH_TOOL_DESCRIPTION:
+      "Case-insensitive semantic search over Acme documentation.",
+    DOC_SEARCH_QUERY_DESCRIPTION:
+      "Case-insensitive documentation search query.",
     DOC_NO_RESULTS: "No results for {query}.",
     DOC_SUCCESS_HEADER: "Found {count} results for {query}.",
     DOC_RESULT_NOTE: "Only use relevant results.",
