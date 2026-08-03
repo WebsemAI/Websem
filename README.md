@@ -6,6 +6,26 @@ The monorepo contains separate Python and TypeScript types, builders, and client
 MkDocs Material plugins and an Angular WebMCP adapter. Artifacts use one versioned binary
 format, so either client can read output from either builder.
 
+## Install
+
+### TypeScript
+
+```bash
+npm install @websem/client
+npm install --save-dev @websem/builder
+npm install @websem/angular
+npm install @websem/types
+```
+
+### Python
+
+```bash
+uv add websem-client
+uv add websem-builder
+uv add mkdocs-websem
+uv add websem-types
+```
+
 ## Build
 
 ```bash
