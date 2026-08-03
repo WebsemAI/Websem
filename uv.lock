@@ -457,7 +457,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-websem"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/python/mkdocs-websem" }
 dependencies = [
     { name = "mkdocs" },
@@ -873,7 +873,7 @@ wheels = [
 
 [[package]]
 name = "websem-builder"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/python/websem-builder" }
 dependencies = [
     { name = "model2vec" },
@@ -890,7 +890,7 @@ requires-dist = [
 
 [[package]]
 name = "websem-client"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/python/websem-client" }
 dependencies = [
     { name = "websem-types" },
@@ -901,7 +901,7 @@ requires-dist = [{ name = "websem-types", editable = "packages/python/websem-typ
 
 [[package]]
 name = "websem-monorepo"
-version = "0.1.1"
+version = "0.1.2"
 source = { virtual = "." }
 dependencies = [
     { name = "mkdocs-websem" },
@@ -934,5 +934,5 @@ dev = [
 
 [[package]]
 name = "websem-types"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/python/websem-types" }
