@@ -83,7 +83,8 @@ provideWebsemTools({
   indexUrl: "/search/",
   exampleQuestions: ["How do I configure Acme?"],
   texts: {
-    DOC_SEARCH_INSTRUCTION: "Use this tool before answering Acme questions.",
+    DOC_SEARCH_INSTRUCTION:
+      "Search before answering Acme questions. Read a result's Markdown File path when its snippet is insufficient.",
     DOC_SEARCH_TOOL_DESCRIPTION: "Semantic search over Acme documentation.",
     DOC_SEARCH_QUERY_DESCRIPTION: "Documentation search query.",
     DOC_NO_RESULTS: "No results for {query}.",
