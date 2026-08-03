@@ -79,10 +79,21 @@ jobs:
   publish-pypi:
     needs: check
     runs-on: ubuntu-latest
-    environment: pypi
+    environment: ${{ matrix.environment }}
     permissions:
       contents: read
       id-token: write
+    strategy:
+      matrix:
+        include:
+          - package: websem-types
+            environment: pypi-websem-types
+          - package: websem-client
+            environment: pypi-websem-client
+          - package: websem-builder
+            environment: pypi-websem-builder
+          - package: mkdocs-websem
+            environment: pypi-mkdocs-websem
 
     steps:
       - uses: actions/checkout@v6
@@ -92,5 +103,5 @@ jobs:
           version: "0.11.32"
           python-version: "3.11"
 
-      - run: uv build --all-packages --out-dir dist-python
+      - run: uv build --package "${{ matrix.package }}" --out-dir dist-python
       - run: uv publish dist-python/*
