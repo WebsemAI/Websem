@@ -38,6 +38,7 @@ jobs:
       - run: uv run pytest
 
   publish-npm:
+    if: vars.NPM_PUBLISH_ENABLED == 'true'
     needs: check
     runs-on: ubuntu-latest
     permissions:
