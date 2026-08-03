@@ -8,6 +8,7 @@ from websem_types import Section
 _SPACE = re.compile(r"\s+")
 _EXCLUDED_TAGS = {"code", "kbd", "math", "noscript", "pre", "samp", "script", "style", "svg"}
 _HEADING_TAGS = {f"h{level}" for level in range(1, 7)}
+_PERMALINK_CLASSES = {"headerlink", "header-anchor", "permalink"}
 _VOID_TAGS = {
     "area",
     "base",
@@ -55,6 +56,7 @@ class RenderedPageParser(HTMLParser):
         excluded = (
             tag in _EXCLUDED_TAGS
             or "no-websem" in classes
+            or bool(classes & _PERMALINK_CLASSES)
             or "data-websem-exclude" in attributes
             or "data-search-exclude" in attributes
         )

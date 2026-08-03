@@ -17,3 +17,14 @@ def test_parse_rendered_page_collects_sections_and_excludes_code() -> None:
         {"text": "Run the command.", "heading": "Install", "anchor": "install"},
         {"text": "Open it.", "heading": "Usage", "anchor": "usage"},
     ]
+
+
+def test_parse_rendered_page_excludes_heading_permalink() -> None:
+    text, sections = parse_rendered_page(
+        '<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices">¶</a></h2><p>Use it.</p>'
+    )
+
+    assert text == "Best practices Use it."
+    assert sections == [
+        {"text": "Use it.", "heading": "Best practices", "anchor": "best-practices"},
+    ]
