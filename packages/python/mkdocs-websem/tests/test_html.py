@@ -21,7 +21,8 @@ def test_parse_rendered_page_collects_sections_and_excludes_code() -> None:
 
 def test_parse_rendered_page_excludes_heading_permalink() -> None:
     text, sections = parse_rendered_page(
-        '<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices">¶</a></h2><p>Use it.</p>'
+        '<h2 id="best-practices">Best practices'
+        '<a class="headerlink" href="#best-practices">¶</a></h2><p>Use it.</p>'
     )
 
     assert text == "Best practices Use it."
