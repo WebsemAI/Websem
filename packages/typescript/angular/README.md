@@ -31,9 +31,9 @@ provideWebsemTools({
   exampleQuestions: [],
   texts: {
     DOC_SEARCH_INSTRUCTION:
-      "Search before answering Acme questions. Read a result's Markdown File path when its snippet is insufficient.",
-    DOC_SEARCH_TOOL_DESCRIPTION: "Semantic search over Acme docs.",
-    DOC_SEARCH_QUERY_DESCRIPTION: "Documentation search query.",
+      "Search before answering Acme questions. Search is case-insensitive. Read a result's Markdown File path when its snippet is insufficient.",
+    DOC_SEARCH_TOOL_DESCRIPTION: "Case-insensitive semantic search over Acme docs.",
+    DOC_SEARCH_QUERY_DESCRIPTION: "Case-insensitive documentation search query.",
     DOC_NO_RESULTS: "No results for {query}.",
     DOC_SUCCESS_HEADER: "Found {count} results for {query}.",
     DOC_RESULT_NOTE: "Only use relevant results.",
