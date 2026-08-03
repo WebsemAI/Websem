@@ -1,6 +1,6 @@
 {
   "name": "@websem/builder",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Node.js artifact builder for websem browser semantic search",
   "repository": {
     "type": "git",
@@ -27,8 +27,8 @@
     "test": "vitest run --watch=false"
   },
   "dependencies": {
-    "@websem/client": "0.1.3",
-    "@websem/types": "0.1.3"
+    "@websem/client": "0.1.4",
+    "@websem/types": "0.1.4"
   },
   "devDependencies": {
     "@types/node": "^20.19.9"
