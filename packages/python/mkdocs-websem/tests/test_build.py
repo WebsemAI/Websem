@@ -44,7 +44,7 @@ def test_build_plugin_collects_pages_and_invokes_builder(
     source_path.write_text("# Guide\n\nUseful text.")
     mkdocs_config = SimpleNamespace(site_dir=str(tmp_path))
     page = SimpleNamespace(
-        title="Guide",
+        title=2018,
         url="guide/",
         file=SimpleNamespace(src_uri="guide.md", abs_src_path=str(source_path)),
     )
@@ -58,7 +58,7 @@ def test_build_plugin_collects_pages_and_invokes_builder(
             "documents": [
                 {
                     "id": "guide.md",
-                    "title": "Guide",
+                    "title": "2018",
                     "href": "guide/",
                     "text": "Guide Useful text.",
                     "sections": [{"text": "Useful text.", "heading": "Guide", "anchor": "guide"}],

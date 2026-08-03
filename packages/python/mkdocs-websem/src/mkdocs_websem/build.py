@@ -102,7 +102,7 @@ class WebsemBuildPlugin(BasePlugin[WebsemBuildConfig]):
 
         document: BuildDocument = {
             "id": source_uri,
-            "title": page.title or source_uri,
+            "title": str(page.title) if page.title else source_uri,
             "href": page.url,
             "text": text,
         }

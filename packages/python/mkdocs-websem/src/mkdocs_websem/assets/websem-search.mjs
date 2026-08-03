@@ -126,7 +126,7 @@ const splitPunctuation = (token) => {
 
 const basicTokenize = (value) => {
   let cleaned = "";
-  for (const character of value) {
+  for (const character of String(value ?? "")) {
     const codePoint = character.codePointAt(0);
     if (codePoint === 0 || codePoint === 0xfffd || isControl(character)) {
       continue;
