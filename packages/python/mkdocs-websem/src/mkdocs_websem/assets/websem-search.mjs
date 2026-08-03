@@ -46,19 +46,27 @@ const loadArtifacts = async () => {
       fetchJson(artifactUrl(manifest.files.vocab)),
     ]);
     const scaleBytes = new Uint8Array(scaleBuffer);
-    const scaleView = new DataView(scaleBytes.buffer, scaleBytes.byteOffset, scaleBytes.byteLength);
+    const scaleView = new DataView(
+      scaleBytes.buffer,
+      scaleBytes.byteOffset,
+      scaleBytes.byteLength,
+    );
     const scales = new Float32Array(scaleBytes.byteLength / 4);
     for (let index = 0; index < scales.length; index += 1) {
       scales[index] = scaleView.getFloat32(index * 4, true);
     }
     if (manifest.websem_version !== "1.0") {
-      throw new Error(`websem unsupported artifact version: ${manifest.websem_version}`);
+      throw new Error(
+        `websem unsupported artifact version: ${manifest.websem_version}`,
+      );
     }
-    if (chunks.length !== manifest.n_chunks
-      || docs.byteLength !== manifest.n_chunks * manifest.dims
-      || tokens.byteLength !== manifest.vocab_size * manifest.dims
-      || scaleBytes.byteLength !== manifest.vocab_size * 4
-      || vocabulary.length !== manifest.vocab_size) {
+    if (
+      chunks.length !== manifest.n_chunks ||
+      docs.byteLength !== manifest.n_chunks * manifest.dims ||
+      tokens.byteLength !== manifest.vocab_size * manifest.dims ||
+      scaleBytes.byteLength !== manifest.vocab_size * 4 ||
+      vocabulary.length !== manifest.vocab_size
+    ) {
       throw new Error("websem artifact lengths do not match the manifest");
     }
     return {
@@ -69,7 +77,9 @@ const loadArtifacts = async () => {
       tokens: new Int8Array(tokens),
       scales,
       vocabulary,
-      vocabularyIndex: new Map(vocabulary.map((token, index) => [token, index])),
+      vocabularyIndex: new Map(
+        vocabulary.map((token, index) => [token, index]),
+      ),
     };
   });
   return artifactsPromise;
@@ -85,14 +95,14 @@ const isControl = (character) => {
 };
 
 const isChinese = (codePoint) =>
-  (codePoint >= 0x4e00 && codePoint <= 0x9fff)
-  || (codePoint >= 0x3400 && codePoint <= 0x4dbf)
-  || (codePoint >= 0x20000 && codePoint <= 0x2a6df)
-  || (codePoint >= 0x2a700 && codePoint <= 0x2b73f)
-  || (codePoint >= 0x2b740 && codePoint <= 0x2b81f)
-  || (codePoint >= 0x2b820 && codePoint <= 0x2ceaf)
-  || (codePoint >= 0xf900 && codePoint <= 0xfaff)
-  || (codePoint >= 0x2f800 && codePoint <= 0x2fa1f);
+  (codePoint >= 0x4e00 && codePoint <= 0x9fff) ||
+  (codePoint >= 0x3400 && codePoint <= 0x4dbf) ||
+  (codePoint >= 0x20000 && codePoint <= 0x2a6df) ||
+  (codePoint >= 0x2a700 && codePoint <= 0x2b73f) ||
+  (codePoint >= 0x2b740 && codePoint <= 0x2b81f) ||
+  (codePoint >= 0x2b820 && codePoint <= 0x2ceaf) ||
+  (codePoint >= 0xf900 && codePoint <= 0xfaff) ||
+  (codePoint >= 0x2f800 && codePoint <= 0x2fa1f);
 
 const splitPunctuation = (token) => {
   const output = [];
@@ -123,11 +133,21 @@ const basicTokenize = (value) => {
     }
     cleaned += isWhitespace(character)
       ? " "
-      : isChinese(codePoint) ? ` ${character} ` : character;
+      : isChinese(codePoint)
+        ? ` ${character} `
+        : character;
   }
-  return cleaned.trim().split(/\s+/u).flatMap((token) => splitPunctuation(
-    token.toLowerCase().normalize("NFD").replace(/\p{Mn}/gu, ""),
-  ));
+  return cleaned
+    .trim()
+    .split(/\s+/u)
+    .flatMap((token) =>
+      splitPunctuation(
+        token
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/\p{Mn}/gu, ""),
+      ),
+    );
 };
 
 const wordPieceIds = (token, vocabularyIndex) => {
@@ -142,7 +162,9 @@ const wordPieceIds = (token, vocabularyIndex) => {
     let matched;
     while (start < end) {
       const prefix = start === 0 ? "" : "##";
-      matched = vocabularyIndex.get(`${prefix}${characters.slice(start, end).join("")}`);
+      matched = vocabularyIndex.get(
+        `${prefix}${characters.slice(start, end).join("")}`,
+      );
       if (matched !== undefined) {
         break;
       }
@@ -157,8 +179,10 @@ const wordPieceIds = (token, vocabularyIndex) => {
   return pieces;
 };
 
-const tokenize = (value, artifacts) => basicTokenize(value)
-  .flatMap((token) => wordPieceIds(token, artifacts.vocabularyIndex));
+const tokenize = (value, artifacts) =>
+  basicTokenize(value).flatMap((token) =>
+    wordPieceIds(token, artifacts.vocabularyIndex),
+  );
 
 const normalize = (vector) => {
   let norm = 0;
@@ -195,7 +219,12 @@ const embedQuery = (query, artifacts) => {
   return normalize(vector);
 };
 
-const bestDocuments = (ranked, artifacts, count, minScore = Number.NEGATIVE_INFINITY) => {
+const bestDocuments = (
+  ranked,
+  artifacts,
+  count,
+  minScore = Number.NEGATIVE_INFINITY,
+) => {
   const best = new Map();
   for (const rankedChunk of ranked) {
     if (rankedChunk.score < minScore) {
@@ -220,38 +249,108 @@ const semanticResults = (query, artifacts, count, minScore) => {
   }
   const { dims } = artifacts.manifest;
   const ranked = artifacts.chunks.map((_, chunkIndex) => {
-      let dot = 0;
-      let documentNorm = 0;
-      const offset = chunkIndex * dims;
-      for (let dimension = 0; dimension < dims; dimension += 1) {
-        const value = artifacts.docs[offset + dimension];
-        dot += vector[dimension] * value;
-        documentNorm += value * value;
-      }
-      return { index: chunkIndex, score: documentNorm === 0 ? 0 : dot / Math.sqrt(documentNorm) };
-    });
+    let dot = 0;
+    let documentNorm = 0;
+    const offset = chunkIndex * dims;
+    for (let dimension = 0; dimension < dims; dimension += 1) {
+      const value = artifacts.docs[offset + dimension];
+      dot += vector[dimension] * value;
+      documentNorm += value * value;
+    }
+    return {
+      index: chunkIndex,
+      score: documentNorm === 0 ? 0 : dot / Math.sqrt(documentNorm),
+    };
+  });
   return bestDocuments(ranked, artifacts, count, minScore);
 };
 
-const lexicalTerms = (value) => basicTokenize(value)
-  .filter((term) => /[\p{L}\p{N}]/u.test(term));
+const lexicalTerms = (value) =>
+  basicTokenize(value).filter((term) => /[\p{L}\p{N}]/u.test(term));
 
 const specificTermStopWords = new Set([
-  "a", "an", "and", "are", "as", "at", "be", "but", "by", "can", "could",
-  "did", "do", "does", "for", "from", "has", "have", "he", "her", "hers",
-  "him", "his", "how", "i", "if", "in", "into", "is", "it", "its", "me",
-  "my", "no", "not", "of", "on", "or", "our", "ours", "she", "should", "so",
-  "than", "that", "the", "their", "theirs", "them", "then", "there", "these",
-  "they", "this", "those", "to", "too", "us", "was", "we", "were", "what",
-  "when", "where", "which", "who", "why", "will", "with", "would", "you",
-  "your", "yours",
+  "a",
+  "an",
+  "and",
+  "are",
+  "as",
+  "at",
+  "be",
+  "but",
+  "by",
+  "can",
+  "could",
+  "did",
+  "do",
+  "does",
+  "for",
+  "from",
+  "has",
+  "have",
+  "he",
+  "her",
+  "hers",
+  "him",
+  "his",
+  "how",
+  "i",
+  "if",
+  "in",
+  "into",
+  "is",
+  "it",
+  "its",
+  "me",
+  "my",
+  "no",
+  "not",
+  "of",
+  "on",
+  "or",
+  "our",
+  "ours",
+  "she",
+  "should",
+  "so",
+  "than",
+  "that",
+  "the",
+  "their",
+  "theirs",
+  "them",
+  "then",
+  "there",
+  "these",
+  "they",
+  "this",
+  "those",
+  "to",
+  "too",
+  "us",
+  "was",
+  "we",
+  "were",
+  "what",
+  "when",
+  "where",
+  "which",
+  "who",
+  "why",
+  "will",
+  "with",
+  "would",
+  "you",
+  "your",
+  "yours",
 ]);
 
 const specificTermResults = (query, artifacts, count) => {
-  const terms = [...new Set(lexicalTerms(query))]
-    .filter((term) => Array.from(term).length > 1
-      && !specificTermStopWords.has(term)
-      && !artifacts.vocabularyIndex.has(term));
+  const terms = [...new Set(lexicalTerms(query))].filter(
+    (term) =>
+      Array.from(term).length > 1 &&
+      !specificTermStopWords.has(term) &&
+      !artifacts.vocabularyIndex.has(term),
+  );
   if (terms.length === 0) {
     return [];
   }
@@ -259,10 +358,14 @@ const specificTermResults = (query, artifacts, count) => {
     const title = new Set(lexicalTerms(chunk.title));
     const heading = new Set(lexicalTerms(chunk.heading ?? ""));
     const snippet = new Set(lexicalTerms(chunk.snippet));
-    const score = terms.reduce((total, term) => total
-      + (title.has(term) ? 4 : 0)
-      + (heading.has(term) ? 2 : 0)
-      + (snippet.has(term) ? 1 : 0), 0);
+    const score = terms.reduce(
+      (total, term) =>
+        total +
+        (title.has(term) ? 4 : 0) +
+        (heading.has(term) ? 2 : 0) +
+        (snippet.has(term) ? 1 : 0),
+      0,
+    );
     return { index, score };
   });
   return bestDocuments(ranked, artifacts, count, Number.MIN_VALUE);
@@ -273,9 +376,9 @@ const keywordResults = (query, artifacts, count) => {
   if (queryTerms.length === 0) {
     return [];
   }
-  const chunkTerms = artifacts.chunks.map((chunk) => lexicalTerms(
-    `${chunk.title} ${chunk.heading ?? ""} ${chunk.snippet}`,
-  ));
+  const chunkTerms = artifacts.chunks.map((chunk) =>
+    lexicalTerms(`${chunk.title} ${chunk.heading ?? ""} ${chunk.snippet}`),
+  );
   const documentFrequency = new Map();
   for (const terms of chunkTerms) {
     const unique = new Set(terms);
@@ -285,8 +388,11 @@ const keywordResults = (query, artifacts, count) => {
       }
     }
   }
-  const averageLength = Math.max(1, chunkTerms.reduce((sum, terms) => sum + terms.length, 0)
-    / Math.max(1, chunkTerms.length));
+  const averageLength = Math.max(
+    1,
+    chunkTerms.reduce((sum, terms) => sum + terms.length, 0) /
+      Math.max(1, chunkTerms.length),
+  );
   const ranked = chunkTerms.map((terms, index) => {
     const frequencies = new Map();
     for (const term of terms) {
@@ -295,11 +401,16 @@ const keywordResults = (query, artifacts, count) => {
     let score = 0;
     for (const term of queryTerms) {
       const frequency = frequencies.get(term) ?? 0;
-      const frequencyWeight = (frequency * 2.2)
-        / (frequency + 1.2 * (0.25 + 0.75 * (terms.length / averageLength)));
+      const frequencyWeight =
+        (frequency * 2.2) /
+        (frequency + 1.2 * (0.25 + 0.75 * (terms.length / averageLength)));
       const frequencyInDocuments = documentFrequency.get(term) ?? 0;
-      score += Math.log(1 + (chunkTerms.length - frequencyInDocuments + 0.5)
-        / (frequencyInDocuments + 0.5)) * frequencyWeight;
+      score +=
+        Math.log(
+          1 +
+            (chunkTerms.length - frequencyInDocuments + 0.5) /
+              (frequencyInDocuments + 0.5),
+        ) * frequencyWeight;
     }
     return { index, score };
   });
@@ -329,15 +440,28 @@ const search = async (query) => {
   const specific = config.specificTermHeuristic
     ? specificTermResults(query, artifacts, candidates)
     : [];
-  const semantic = semanticResults(query, artifacts, candidates, config.minScore);
-  const results = config.mode === "semantic"
-    ? [...new Map([...specific, ...semantic].map((result) => [result.document, result])).values()]
-    : hybridResults(
-      specific,
-      semantic,
-      keywordResults(query, artifacts, candidates),
-      config,
-    );
+  const semantic = semanticResults(
+    query,
+    artifacts,
+    candidates,
+    config.minScore,
+  );
+  const results =
+    config.mode === "semantic"
+      ? [
+          ...new Map(
+            [...specific, ...semantic].map((result) => [
+              result.document,
+              result,
+            ]),
+          ).values(),
+        ]
+      : hybridResults(
+          specific,
+          semantic,
+          keywordResults(query, artifacts, candidates),
+          config,
+        );
   return {
     config,
     results: results.slice(0, config.limit),
@@ -346,8 +470,10 @@ const search = async (query) => {
 
 const findResultsContainer = (input) => {
   const searchRoot = input.closest('[data-md-component="search"]') ?? document;
-  return searchRoot.querySelector('[data-md-component="search-result"]')
-    ?? searchRoot.querySelector(".md-search-result");
+  return (
+    searchRoot.querySelector('[data-md-component="search-result"]') ??
+    searchRoot.querySelector(".md-search-result")
+  );
 };
 
 const clearNode = (node) => {
@@ -371,7 +497,10 @@ const render = (container, query, results, config) => {
 
   const meta = document.createElement("div");
   meta.className = "md-search-result__meta";
-  meta.textContent = results.length === 1 ? "1 matching document" : `${results.length} matching documents`;
+  meta.textContent =
+    results.length === 1
+      ? "1 matching document"
+      : `${results.length} matching documents`;
   container.append(meta);
 
   const list = document.createElement("ol");
@@ -386,11 +515,14 @@ const render = (container, query, results, config) => {
     link.href = resultHref(result, config);
 
     const article = document.createElement("article");
-    article.className = "md-search-result__article md-search-result__article--document";
+    article.className =
+      "md-search-result__article md-search-result__article--document";
 
     const title = document.createElement("h2");
     title.className = "md-search-result__title";
-    title.textContent = result.heading ? `${result.title} - ${result.heading}` : result.title;
+    title.textContent = result.heading
+      ? `${result.title} - ${result.heading}`
+      : result.title;
 
     const teaser = document.createElement("p");
     teaser.className = "md-search-result__teaser";
@@ -424,50 +556,63 @@ const initialize = (root = document) => {
     initializedInputs.add(input);
     let request = 0;
 
-    input.addEventListener("focus", () => {
-      void loadArtifacts();
-    }, { once: true });
+    input.addEventListener(
+      "focus",
+      () => {
+        void loadArtifacts();
+      },
+      { once: true },
+    );
 
-    input.addEventListener("input", async (event) => {
-      event.stopImmediatePropagation();
-      const currentRequest = request + 1;
-      request = currentRequest;
-      const query = input.value.trim();
-      if (!query) {
+    input.addEventListener(
+      "input",
+      async (event) => {
+        event.stopImmediatePropagation();
+        const currentRequest = request + 1;
+        request = currentRequest;
+        const query = input.value.trim();
+        if (!query) {
+          const container = findResultsContainer(input);
+          if (container) {
+            clearNode(container);
+          }
+          return;
+        }
         const container = findResultsContainer(input);
-        if (container) {
-          clearNode(container);
+        if (!container) {
+          return;
         }
-        return;
-      }
-      const container = findResultsContainer(input);
-      if (!container) {
-        return;
-      }
-      try {
-        const response = await search(query);
-        if (request === currentRequest && input.value.trim() === query) {
-          render(container, query, response.results, response.config);
+        try {
+          const response = await search(query);
+          if (request === currentRequest && input.value.trim() === query) {
+            render(container, query, response.results, response.config);
+          }
+        } catch (error) {
+          console.error(error);
+          if (request === currentRequest) {
+            renderError(container);
+          }
         }
-      } catch (error) {
-        console.error(error);
-        if (request === currentRequest) {
-          renderError(container);
-        }
-      }
-    }, { capture: true });
+      },
+      { capture: true },
+    );
   }
 };
 
 if (globalThis.document$?.subscribe) {
   globalThis.document$.subscribe(() => initialize());
 } else if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => initialize(), { once: true });
+  document.addEventListener("DOMContentLoaded", () => initialize(), {
+    once: true,
+  });
 } else {
   initialize();
 }
 
 if (!globalThis.document$?.subscribe) {
   const observer = new MutationObserver(() => initialize());
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
 }

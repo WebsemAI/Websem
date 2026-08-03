@@ -122,7 +122,9 @@ describe("sdl-mcp style configuration", () => {
   });
 
   it("allows disabling the Markdown reader", () => {
-    expect(createWebsemTools(config({ markdownReader: false }))).toHaveLength(1);
+    expect(createWebsemTools(config({ markdownReader: false }))).toHaveLength(
+      1,
+    );
   });
 
   it("validates input and forwards hybrid options", async () => {
