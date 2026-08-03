@@ -7,6 +7,9 @@ result messages come from `texts.DOC_*` and optional `texts.ICON_*` fields. Set 
 one of `indexUrl`, `artifacts`, or `client` for documentation search. Icon search uses
 the matching `iconIndexUrl`, `iconArtifacts`, or `iconClient` field.
 
+The Markdown reader is enabled by default. It accepts only relative `.md` paths and reads
+the file from the current site origin. Set `markdownReader: false` to disable it.
+
 ```ts
 provideWebsemTools({
   name: "acme-docs",

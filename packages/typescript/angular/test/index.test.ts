@@ -111,6 +111,20 @@ describe("sdl-mcp style configuration", () => {
     expect(tools[1]?.description).toContain("Search before choosing an icon.");
   });
 
+  it("creates a Markdown-only reader by default", async () => {
+    const tools = createWebsemTools(config());
+    const reader = tools[1];
+    expect(reader?.name).toBe("acme-search-read");
+    expect(reader?.description).toContain("Markdown (.md)");
+    await expect(
+      reader?.execute({ path: "../secrets.txt" } as never, {} as never),
+    ).rejects.toThrow("relative Markdown");
+  });
+
+  it("allows disabling the Markdown reader", () => {
+    expect(createWebsemTools(config({ markdownReader: false }))).toHaveLength(1);
+  });
+
   it("validates input and forwards hybrid options", async () => {
     const hybrid = vi.fn(() => [result]);
     const [tool] = createWebsemTools(

@@ -58,6 +58,8 @@ export interface WebsemAngularConfig extends SearchSourceConfig {
   documentedName: string;
   projectName: string;
   searchToolName: string;
+  markdownReader?: boolean;
+  markdownReaderToolName?: string;
   iconSearch?: boolean;
   iconSearchToolName?: string;
   iconName?: string;
@@ -102,6 +104,25 @@ export type ResultTexts = Pick<
 
 const DEFAULT_LIMIT = 5;
 const MAX_LIMIT = 20;
+
+const createMarkdownReaderSchema = () =>
+  ({
+    type: "object",
+    properties: {
+      path: {
+        type: "string",
+        description:
+          "Relative path to one Markdown documentation file, for example `components/button.md`.",
+        minLength: 4,
+      },
+    },
+    required: ["path"],
+    additionalProperties: false,
+  }) as const;
+
+type MarkdownReaderSchema = ReturnType<typeof createMarkdownReaderSchema>;
+
+type WebsemToolSchema = SearchInputSchema | MarkdownReaderSchema;
 
 const createInputSchema = (queryDescription: string) =>
   ({
@@ -245,6 +266,26 @@ const validateToolArgs = (
   return validated;
 };
 
+const validateMarkdownPath = (value: unknown): string => {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new TypeError("File reader arguments must be an object.");
+  }
+  const args = value as Record<string, unknown>;
+  if (Object.keys(args).length !== 1 || typeof args.path !== "string") {
+    throw new TypeError("File reader arguments must contain only a path.");
+  }
+  const path = args.path.trim();
+  if (
+    !path.endsWith(".md") ||
+    path.startsWith("/") ||
+    path.includes("\\") ||
+    path.split("/").includes("..")
+  ) {
+    throw new TypeError("File path must be a relative Markdown (.md) path.");
+  }
+  return path;
+};
+
 const performSearch = async (
   client: WebsemSearchClient,
   query: string,
@@ -339,7 +380,7 @@ const buildToolConfigs = (config: WebsemAngularConfig): ToolTextConfig[] => {
 const createWebsemTool = (
   config: WebsemAngularConfig,
   tool: ToolTextConfig,
-): WebMcpToolDescriptor<SearchInputSchema> => {
+): WebMcpToolDescriptor<WebsemToolSchema> => {
   validateSource(tool.source, tool.type);
   let clientPromise: Promise<WebsemSearchClient> | undefined;
   return {
@@ -367,10 +408,34 @@ const createWebsemTool = (
   };
 };
 
+const createMarkdownReaderTool = (
+  config: WebsemAngularConfig,
+): WebMcpToolDescriptor<WebsemToolSchema> => ({
+  name: config.markdownReaderToolName ?? `${config.searchToolName}-read`,
+  description: [
+    `${config.documentedName} Documentation Reader`,
+    "Read the complete contents of one documentation file after search identifies it.",
+    "Use only a relative Markdown (.md) path returned by documentation search. Do not use URLs or other file formats.",
+  ].join("\n\n"),
+  inputSchema: createMarkdownReaderSchema(),
+  execute: async (untrustedArgs): Promise<McpTextResult> => {
+    const path = validateMarkdownPath(untrustedArgs);
+    const response = await fetch(new URL(path, globalThis.location.href));
+    if (!response.ok) {
+      throw new Error(`Failed to read ${path}: ${response.status} ${response.statusText}`);
+    }
+    return {
+      content: [{ type: "text", text: await response.text() }],
+    };
+  },
+});
+
 export const createWebsemTools = (
   config: WebsemAngularConfig,
-): WebMcpToolDescriptor<SearchInputSchema>[] =>
-  buildToolConfigs(config).map((tool) => createWebsemTool(config, tool));
+): WebMcpToolDescriptor<WebsemToolSchema>[] => [
+  ...buildToolConfigs(config).map((tool) => createWebsemTool(config, tool)),
+  ...(config.markdownReader === false ? [] : [createMarkdownReaderTool(config)]),
+];
 
 export const defineWebsemConfig = (
   config: WebsemAngularConfig,
