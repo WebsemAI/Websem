@@ -2,6 +2,12 @@
 
 Angular v22+ WebMCP tools backed by `@websem/client`.
 
+## Install
+
+```bash
+npm install @websem/angular
+```
+
 The config mirrors `sdl-mcp`: tool instructions, descriptions, query descriptions, and
 result messages come from `texts.DOC_*` and optional `texts.ICON_*` fields. Set exactly
 one of `indexUrl`, `artifacts`, or `client` for documentation search. Icon search uses
