@@ -107,6 +107,7 @@ describe("sdl-mcp style configuration", () => {
     expect(tools.map((tool) => tool.name)).toEqual([
       "acme-search",
       "acme-icon-search",
+      "acme-search-read",
     ]);
     expect(tools[1]?.description).toContain("Search before choosing an icon.");
   });
