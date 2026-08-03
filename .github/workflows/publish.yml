@@ -38,7 +38,6 @@ jobs:
       - run: uv run pytest
 
   publish-npm:
-    if: vars.NPM_PUBLISH_ENABLED == 'true'
     needs: check
     runs-on: ubuntu-latest
     permissions:
@@ -106,5 +105,4 @@ jobs:
           python-version: "3.11"
 
       - run: uv build --package "${{ matrix.package }}" --out-dir dist-python
-      - if: matrix.package != 'mkdocs-websem' || vars.MKDOCS_WEBSEM_PYPI_ENABLED == 'true'
-        run: uv publish dist-python/*
+      - run: uv publish dist-python/*
