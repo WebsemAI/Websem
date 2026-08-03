@@ -1,4 +1,4 @@
-# websem
+# Websem
 
 Static semantic search for browsers, with no search server and no runtime model inference.
 
