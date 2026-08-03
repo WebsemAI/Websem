@@ -109,7 +109,8 @@ class WebsemBuildPlugin(BasePlugin[WebsemBuildConfig]):
         if sections:
             document["sections"] = sections
         self.documents.append(document)
-        self.sources[source_uri] = Path(page.file.abs_src_path)
+        if page.file.abs_src_path is not None:
+            self.sources[source_uri] = Path(page.file.abs_src_path)
         return html
 
     def on_post_build(self, *, config: MkDocsConfig) -> None:
