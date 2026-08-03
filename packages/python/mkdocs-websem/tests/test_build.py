@@ -109,7 +109,7 @@ def test_build_plugin_applies_include_and_exclude_patterns() -> None:
     ]
 
 
-def test_build_plugin_skips_source_copies_for_configured_reader_path(
+def test_build_plugin_copies_sources_to_configured_reader_path(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr("mkdocs_websem.build.build", lambda *args, **kwargs: None)
@@ -133,4 +133,5 @@ def test_build_plugin_skips_source_copies_for_configured_reader_path(
     )
     plugin.on_post_build(config=SimpleNamespace(site_dir=str(tmp_path)))
 
+    assert (tmp_path / "source/docs/guide.md").read_text() == "# Guide"
     assert not (tmp_path / "websem/index/sources/guide.md").exists()

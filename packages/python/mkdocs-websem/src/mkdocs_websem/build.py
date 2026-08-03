@@ -124,10 +124,11 @@ class WebsemBuildPlugin(BasePlugin[WebsemBuildConfig]):
             chunk_overlap=self.config.chunk_overlap,
             title_prefix=self.config.title_prefix,
         )
-        if self.config.markdown_reader_path:
-            return
-
-        source_dir = output_dir / "sources"
+        source_dir = (
+            Path(config.site_dir) / self.config.markdown_reader_path
+            if self.config.markdown_reader_path
+            else output_dir / "sources"
+        )
         for source_uri, source_path in self.sources.items():
             target_path = source_dir / source_uri
             target_path.parent.mkdir(parents=True, exist_ok=True)

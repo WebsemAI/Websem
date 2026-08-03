@@ -10,7 +10,8 @@ the matching `iconIndexUrl`, `iconArtifacts`, or `iconClient` field.
 The Markdown reader is enabled by default. It accepts only relative `.md` paths returned
 by search and reads the generated source artifact under `indexUrl/sources/`. Set
 `markdownReader: false` to disable it, or use `markdownReaderPath` when files are served
-elsewhere. Configure `markdown_reader_path` on the MkDocs plugin to skip source copies.
+elsewhere. Configure `markdown_reader_path` on the MkDocs plugin to choose its static
+output directory.
 
 ```ts
 provideWebsemTools({
