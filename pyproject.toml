@@ -1,12 +1,12 @@
 [project]
 name = "websem-monorepo"
-version = "0.1.0"
+version = "0.1.1"
 requires-python = ">=3.11"
 dependencies = [
-  "mkdocs-websem==0.1.0",
-  "websem-builder==0.1.0",
-  "websem-client==0.1.0",
-  "websem-types==0.1.0",
+  "mkdocs-websem==0.1.1",
+  "websem-builder==0.1.1",
+  "websem-client==0.1.1",
+  "websem-types==0.1.1",
 ]
 
 [dependency-groups]

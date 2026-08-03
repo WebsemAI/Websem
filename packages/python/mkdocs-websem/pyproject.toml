@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mkdocs-websem"
-version = "0.1.0"
+version = "0.1.1"
 description = "MkDocs build and Material search plugins for websem"
 requires-python = ">=3.11"
 license = "MIT"
 dependencies = [
   "mkdocs>=1.4",
-  "websem-builder==0.1.0",
-  "websem-types==0.1.0",
+  "websem-builder==0.1.1",
+  "websem-types==0.1.1",
 ]
 
 [project.urls]

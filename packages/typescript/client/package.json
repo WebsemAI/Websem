@@ -1,6 +1,6 @@
 {
   "name": "@websem/client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Side-effect-free browser client for websem semantic search artifacts",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "test": "vitest run --watch=false"
   },
   "dependencies": {
-    "@websem/types": "0.1.0"
+    "@websem/types": "0.1.1"
   },
   "license": "MIT",
   "publishConfig": {
