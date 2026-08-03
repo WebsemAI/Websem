@@ -60,6 +60,7 @@ export interface WebsemAngularConfig extends SearchSourceConfig {
   searchToolName: string;
   markdownReader?: boolean;
   markdownReaderToolName?: string;
+  markdownReaderPath?: string;
   iconSearch?: boolean;
   iconSearchToolName?: string;
   iconName?: string;
@@ -174,7 +175,7 @@ export const formatSearchResults = (
     const heading = result.heading
       ? `${result.title} > ${result.heading}`
       : result.title;
-    return `## Result ${index + 1}: ${heading}\n\n${result.snippet}\n\nSource: ${resultHref(result)}`;
+    return `## Result ${index + 1}: ${heading}\n\n${result.snippet}\n\nSource: ${resultHref(result)}\nFile: ${result.document}`;
   });
   return [
     replacePlaceholders(texts.successHeader, query, results.length),
@@ -420,9 +421,19 @@ const createMarkdownReaderTool = (
   inputSchema: createMarkdownReaderSchema(),
   execute: async (untrustedArgs): Promise<McpTextResult> => {
     const path = validateMarkdownPath(untrustedArgs);
-    const response = await fetch(new URL(path, globalThis.location.href));
+    const baseUrl =
+      config.markdownReaderPath ??
+      (config.indexUrl ? new URL("sources/", config.indexUrl).href : undefined);
+    if (!baseUrl) {
+      throw new Error(
+        "Configure markdownReaderPath or indexUrl to read Markdown files.",
+      );
+    }
+    const response = await fetch(new URL(path, baseUrl));
     if (!response.ok) {
-      throw new Error(`Failed to read ${path}: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to read ${path}: ${response.status} ${response.statusText}`,
+      );
     }
     return {
       content: [{ type: "text", text: await response.text() }],
@@ -434,7 +445,9 @@ export const createWebsemTools = (
   config: WebsemAngularConfig,
 ): WebMcpToolDescriptor<WebsemToolSchema>[] => [
   ...buildToolConfigs(config).map((tool) => createWebsemTool(config, tool)),
-  ...(config.markdownReader === false ? [] : [createMarkdownReaderTool(config)]),
+  ...(config.markdownReader === false
+    ? []
+    : [createMarkdownReaderTool(config)]),
 ];
 
 export const defineWebsemConfig = (

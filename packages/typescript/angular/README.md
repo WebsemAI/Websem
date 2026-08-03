@@ -7,8 +7,10 @@ result messages come from `texts.DOC_*` and optional `texts.ICON_*` fields. Set 
 one of `indexUrl`, `artifacts`, or `client` for documentation search. Icon search uses
 the matching `iconIndexUrl`, `iconArtifacts`, or `iconClient` field.
 
-The Markdown reader is enabled by default. It accepts only relative `.md` paths and reads
-the file from the current site origin. Set `markdownReader: false` to disable it.
+The Markdown reader is enabled by default. It accepts only relative `.md` paths returned
+by search and reads the generated source artifact under `indexUrl/sources/`. Set
+`markdownReader: false` to disable it, or use `markdownReaderPath` when files are served
+elsewhere. Configure `markdown_reader_path` on the MkDocs plugin to skip source copies.
 
 ```ts
 provideWebsemTools({

@@ -39,8 +39,15 @@ def test_build_plugin_collects_pages_and_invokes_builder(
     assert not errors
     assert not warnings
 
+    source_path = tmp_path / "docs" / "guide.md"
+    source_path.parent.mkdir()
+    source_path.write_text("# Guide\n\nUseful text.")
     mkdocs_config = SimpleNamespace(site_dir=str(tmp_path))
-    page = SimpleNamespace(title="Guide", url="guide/", file=SimpleNamespace(src_uri="guide.md"))
+    page = SimpleNamespace(
+        title="Guide",
+        url="guide/",
+        file=SimpleNamespace(src_uri="guide.md", abs_src_path=str(source_path)),
+    )
     plugin.on_pre_build(config=mkdocs_config)
     html = '<h1 id="guide">Guide</h1><p>Useful text.</p><pre>ignored</pre>'
     assert plugin.on_page_content(html, page=page, config=mkdocs_config, files=[]) == html
@@ -65,6 +72,7 @@ def test_build_plugin_collects_pages_and_invokes_builder(
             "title_prefix": True,
         }
     ]
+    assert (tmp_path / "websem/index/sources/guide.md").read_text() == "# Guide\n\nUseful text."
 
 
 def test_build_plugin_applies_include_and_exclude_patterns() -> None:
@@ -90,7 +98,7 @@ def test_build_plugin_applies_include_and_exclude_patterns() -> None:
         page = SimpleNamespace(
             title=source_uri,
             url=source_uri,
-            file=SimpleNamespace(src_uri=source_uri),
+            file=SimpleNamespace(src_uri=source_uri, abs_src_path=__file__),
         )
         plugin.on_page_content(html, page=page, config=SimpleNamespace(), files=[])
 
@@ -99,3 +107,30 @@ def test_build_plugin_applies_include_and_exclude_patterns() -> None:
         "components/button.md",
         "patterns/forms/filter.md",
     ]
+
+
+def test_build_plugin_skips_source_copies_for_configured_reader_path(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr("mkdocs_websem.build.build", lambda *args, **kwargs: None)
+    source_path = tmp_path / "docs" / "guide.md"
+    source_path.parent.mkdir()
+    source_path.write_text("# Guide")
+    plugin = WebsemBuildPlugin()
+    errors, warnings = plugin.load_config({"markdown_reader_path": "source/docs/"})
+    assert not errors
+    assert not warnings
+    plugin.on_pre_build(config=SimpleNamespace())
+    plugin.on_page_content(
+        "<h1>Guide</h1>",
+        page=SimpleNamespace(
+            title="Guide",
+            url="guide/",
+            file=SimpleNamespace(src_uri="guide.md", abs_src_path=str(source_path)),
+        ),
+        config=SimpleNamespace(),
+        files=[],
+    )
+    plugin.on_post_build(config=SimpleNamespace(site_dir=str(tmp_path)))
+
+    assert not (tmp_path / "websem/index/sources/guide.md").exists()

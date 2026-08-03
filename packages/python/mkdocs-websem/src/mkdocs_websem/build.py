@@ -26,6 +26,7 @@ class WebsemBuildConfig(base.Config):
     title_prefix = c.Type(bool, default=True)
     include = c.ListOfItems(c.Type(str), default=[])
     exclude = c.ListOfItems(c.Type(str), default=[])
+    markdown_reader_path = c.Optional(c.Type(str))
 
 
 def _normalize_path(value: str) -> str:
@@ -73,9 +74,11 @@ class WebsemBuildPlugin(BasePlugin[WebsemBuildConfig]):
     def __init__(self) -> None:
         super().__init__()
         self.documents: list[BuildDocument] = []
+        self.sources: dict[str, Path] = {}
 
     def on_pre_build(self, *, config: MkDocsConfig) -> None:
         self.documents.clear()
+        self.sources.clear()
 
     def on_page_content(
         self,
@@ -106,6 +109,7 @@ class WebsemBuildPlugin(BasePlugin[WebsemBuildConfig]):
         if sections:
             document["sections"] = sections
         self.documents.append(document)
+        self.sources[source_uri] = Path(page.file.abs_src_path)
         return html
 
     def on_post_build(self, *, config: MkDocsConfig) -> None:
@@ -119,3 +123,11 @@ class WebsemBuildPlugin(BasePlugin[WebsemBuildConfig]):
             chunk_overlap=self.config.chunk_overlap,
             title_prefix=self.config.title_prefix,
         )
+        if self.config.markdown_reader_path:
+            return
+
+        source_dir = output_dir / "sources"
+        for source_uri, source_path in self.sources.items():
+            target_path = source_dir / source_uri
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+            target_path.write_bytes(source_path.read_bytes())
