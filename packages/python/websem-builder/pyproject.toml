@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "websem-builder"
-version = "0.1.4"
+version = "0.1.5"
 description = "Build browser-ready websem semantic search artifacts"
 requires-python = ">=3.11"
 license = "MIT"
 dependencies = [
   "model2vec>=0.6.0",
   "numpy>=1.26.0,<2.3",
-  "websem-types==0.1.4",
+  "websem-types==0.1.5",
 ]
 
 [project.urls]

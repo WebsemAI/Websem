@@ -1,6 +1,6 @@
 {
   "name": "@websem/angular",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Angular WebMCP adapter for @websem/client",
   "repository": {
     "type": "git",
@@ -30,8 +30,8 @@
     "@angular/core": ">=22.0.0"
   },
   "dependencies": {
-    "@websem/client": "0.1.4",
-    "@websem/types": "0.1.4"
+    "@websem/client": "0.1.5",
+    "@websem/types": "0.1.5"
   },
   "devDependencies": {
     "@angular/core": "^22.1.0",
