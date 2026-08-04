@@ -5,9 +5,12 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { main } from "../src/cli.js";
+import { main as exportMain } from "../src/export-cli.js";
 import {
   buildArtifacts,
   chunkDocuments,
+  exportPortableModel,
+  loadPortableModel,
   writeArtifacts,
   type StaticModel,
 } from "../src/index.js";
@@ -126,5 +129,56 @@ describe("artifact building", () => {
       outputDirectory,
     ]);
     expect(await readdir(outputDirectory)).toContain("manifest.json");
+  });
+});
+
+describe("model export", () => {
+  it("requires an output directory", async () => {
+    await expect(exportMain([])).rejects.toThrow(
+      "Usage: websem-export-model --out <output-dir>",
+    );
+  });
+
+  it("exports F32 Model2Vec weights from a local model directory", async () => {
+    const root = await mkdtemp(join(tmpdir(), "websem-export-"));
+    const source = join(root, "source");
+    const output = join(root, "output");
+    await mkdir(source);
+    const header = new TextEncoder().encode(
+      JSON.stringify({
+        embeddings: {
+          dtype: "F32",
+          shape: [2, 2],
+          data_offsets: [0, 16],
+        },
+      }),
+    );
+    const bytes = new Uint8Array(8 + header.length + 16);
+    new DataView(bytes.buffer).setBigUint64(0, BigInt(header.length), true);
+    bytes.set(header, 8);
+    const data = new DataView(bytes.buffer, 8 + header.length);
+    [1, -1, 0.5, -0.5].forEach((value, index) =>
+      data.setFloat32(index * 4, value, true),
+    );
+    await Promise.all([
+      writeFile(join(source, "model.safetensors"), bytes),
+      writeFile(
+        join(source, "tokenizer.json"),
+        JSON.stringify({ model: { vocab: { one: 0, two: 1 } } }),
+      ),
+    ]);
+    await exportPortableModel({
+      model: source,
+      outputDirectory: output,
+      dimensions: 2,
+    });
+    const exported = await loadPortableModel(output);
+    expect(exported).toMatchObject({
+      modelId: source,
+      dimensions: 2,
+      vocabulary: ["one", "two"],
+    });
+    expect(exported.tokens).toEqual(new Int8Array([127, -127, 127, -127]));
+    expect(exported.scales).toEqual(new Float32Array([1 / 127, 0.5 / 127]));
   });
 });

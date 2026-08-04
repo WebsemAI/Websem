@@ -5,6 +5,8 @@ import { join } from "node:path";
 import { embedText, type StaticModel } from "@websem/client";
 import type { BuildDocument, ChunkRecord, Manifest } from "@websem/types";
 
+export { exportPortableModel, type ExportModelOptions } from "./export.js";
+
 const CHUNKER_VERSION = "1";
 const ARTIFACT_PATTERN =
   /^(?:chunks|docs|tokens|scales|vocab)\.[a-f0-9]{12}\.(?:bin|json)$/u;

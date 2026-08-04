@@ -43,12 +43,34 @@ uv sync --all-packages
 npm install
 
 websem-build docs.json --model minishlab/potion-base-8M --dimensions 128 --out site/search
-websem-export-model --model minishlab/potion-base-8M --dimensions 128 --out model
+npx websem-export-model --out model
 npx websem-build --docs docs.json --model model --out site/search
 ```
 
 Documents are JSON objects with `id`, `title`, `href`, `text`, and optional `sections`.
 The default chunk size is 600 characters with 120 characters of sentence overlap.
+
+## CLIs
+
+`websem-build` is provided by Python `websem-builder` and Node.js `@websem/builder`.
+The MkDocs plugin and Node exporter default to `minishlab/potion-base-8M`, the recommended
+English-only model. For non-English content, pass a suitable Model2Vec model.
+
+```bash
+websem-build <corpus.json|corpus.jsonl> --model <model-id|model-dir> --out <output-dir> [--dimensions 128] [--chunk-size 600] [--chunk-overlap 120] [--no-title-prefix]
+npx websem-build --docs <corpus.json|corpus.jsonl> --model <model-dir> --out <output-dir> [--chunk-size 600] [--chunk-overlap 120] [--no-title-prefix]
+```
+
+The Python CLI downloads and uses a Model2Vec model directly. The Node CLI uses a portable
+model directory. Create it without Python using the Node exporter:
+
+```bash
+npx websem-export-model --out <model-dir> [--model <hugging-face-model-id|local-model-dir>] [--dimensions 128]
+```
+
+The exporter reads a Model2Vec `model.safetensors` and `tokenizer.json` from a local directory
+or public Hugging Face model. It supports F16, F32, and I8 embedding tensors without vocabulary
+quantization.
 
 ## MkDocs
 

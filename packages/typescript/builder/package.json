@@ -15,7 +15,8 @@
     }
   },
   "bin": {
-    "websem-build": "./dist/cli.js"
+    "websem-build": "./dist/cli.js",
+    "websem-export-model": "./dist/export-cli.js"
   },
   "files": [
     "dist"
